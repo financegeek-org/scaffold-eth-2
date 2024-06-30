@@ -358,9 +358,12 @@ const Home: NextPage = () => {
   );
 
   const handleApprove = async () => {
+    setTransStage(1);
+    setTimeout(() => {
+      setTransStage(2);
+    }, 5000)
     try {
       await approveUSDC(contractAddresses.TokenContract, '100000000000');
-        setTransStage(1);
         console.log('Approval successful');
     } catch (error) {
       console.error('Approval failed:', error);
@@ -368,9 +371,13 @@ const Home: NextPage = () => {
   };
 
   const handleBuy = async () => {
+    setTransStage(4);
+    setTransStage(1);
+    setTimeout(() => {
+      setTransStage(4);
+    }, 5000)
     try {
       await buyToken('1'); 
-      setTransStage(0);
       console.log('Purchase successful');
     } catch (error) {
       console.error('Purchase failed:', error);
@@ -378,6 +385,26 @@ const Home: NextPage = () => {
   };
   console.log(userName);
   const greeting = "Hello "+userName;
+  let btnAction;
+  let cbFunc;
+  switch(transStage) {
+    case 0:
+      btnAction = "Approve Contract";
+      cbFunc=handleApprove;
+      break;
+    case 1:
+      btnAction = "Waiting wallet";
+      cbFunc=() => {};
+      break;
+    case 2:
+      btnAction = "Buy Token";
+      cbFunc=handleBuy;
+      break;
+      case 4:
+        btnAction = "Bought!";
+        cbFunc=() => {};
+        break;
+          }
 
   return (
     <>
@@ -398,10 +425,10 @@ const Home: NextPage = () => {
             <Image alt="Carl Jr Burger" className="cursor-pointer" width={150} height={150} src="/burger.jpg" />
               <div
               className="bg-secondary shadow-md hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col"
-              onClick={transStage===1 ? handleBuy : handleApprove}
+              onClick={cbFunc}
             >
               {userName!=='' ? greeting : ""}<br />
-              {transStage===1 ? "Buy Token" : "Approve Contract"}
+              {btnAction}
             </div>                
             </div>
           </div>
