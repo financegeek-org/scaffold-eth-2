@@ -8,11 +8,15 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 import { useEffect, useState } from "react";
 import { initializeBaseSepoliaInteractions } from "../components/baseSepliaTransactions"
+import { getName } from '@coinbase/onchainkit/identity';
+
+import '@coinbase/onchainkit/styles.css';
 
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [transStage, setTransStage] = useState(0);
+  const [userName, setUserName] = useState('');
 
   const USDC_ABI = [
     {
@@ -336,16 +340,24 @@ const Home: NextPage = () => {
     TokenContract: '0xf1673d6b7cb13ba58091e81735cd756ce9a7588a' 
   };
 
+  useEffect(() => {
+    // This code runs once after the initial render
+    updateName();
+  }, []); // Passing an empty array as the second argument
+
+  const updateName = async () => {
+    // Coinbase wallet toolit
+    const address = '0x02feeb0AdE57b6adEEdE5A4EEea6Cf8c21BeB6B1';
+    const name = await getName({ address });
+    setUserName(name);
+    }
+
   const { approveUSDC, buyToken } = initializeBaseSepoliaInteractions(
     contractAddresses,
     { USDC: USDC_ABI, TokenContract: TOKEN_CONTRACT_ABI }
   );
 
   const handleApprove = async () => {
-    setTimeout(() => {
-      setTransStage(1);
-    }, 5000);
-
     try {
       await approveUSDC(contractAddresses.TokenContract, '100000000000');
         setTransStage(1);
@@ -356,11 +368,6 @@ const Home: NextPage = () => {
   };
 
   const handleBuy = async () => {
-    setTimeout(() => {
-      setTransStage(2);
-    }, 5000);
-
-    setTransStage(0);
     try {
       await buyToken('1'); 
       setTransStage(0);
@@ -369,6 +376,8 @@ const Home: NextPage = () => {
       console.error('Purchase failed:', error);
     }
   };
+  console.log(userName);
+  const greeting = "Hello "+userName;
 
   return (
     <>
@@ -391,6 +400,7 @@ const Home: NextPage = () => {
               className="bg-secondary shadow-md hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col"
               onClick={transStage===1 ? handleBuy : handleApprove}
             >
+              {userName!=='' ? greeting : ""}<br />
               {transStage===1 ? "Buy Token" : "Approve Contract"}
             </div>                
             </div>
