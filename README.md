@@ -3,8 +3,8 @@ https://github.com/financegeek-org/scaffold-eth-2
 Presentation:
 https://docs.google.com/presentation/d/1K4HM_08wbXSPkgZciGBZGy0OWmyIZRKgmA0HKdy4Mls/edit#slide=id.p
 
-Demo video:
-https://www.youtube.com/watch?v=Bn2X1-naJ4A
+Presentation video:
+https://www.youtube.com/watch?v=KBmslJJi7Co
 
 Smart Contracts (Base Sepolia Testnet):
 0x840A97F320ED077a6c45dE1C2a63c4e42e6d167A
